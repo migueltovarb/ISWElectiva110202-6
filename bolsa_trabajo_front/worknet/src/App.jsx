@@ -9,7 +9,7 @@ import RestablecerContrasena from './components/RestablecerContrasena'; // desde
 import EnviarRecuperacionCorreo from './components/EnviarRecuperacionCorreo'; // ingresar correo
 import PerfilEmpresa from "./components/PerfilEmpresa";
 import PerfilCandidato from './components/PerfilCandidato';
-
+//#endregion
 function App() {
   return (
     <div className="min-h-screen bg-gray-100">
