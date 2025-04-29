@@ -49,19 +49,17 @@ export default function PerfilEmpresa() {
   return (
     <div className="min-h-screen bg-white p-8">
       <form onSubmit={handleSubmit} className="max-w-6xl mx-auto">
-        {/* Título principal - posicionado a la izquierda */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Perfil de Empresa</h2>
         </div>
 
         <div className="grid grid-cols-12 gap-8">
-          {/* Columna izquierda - ocupa 1/3 del espacio */}
           <div className="col-span-4">
-            {/* Área de subir logo */}
             <div className="mb-6">
-              <label className="border-2 border-emerald-400 rounded-md w-48 h-48 flex flex-col justify-center items-center cursor-pointer">
+              <label htmlFor="logo" className="border-2 border-emerald-400 rounded-md w-48 h-48 flex flex-col justify-center items-center cursor-pointer">
                 <span className="text-emerald-500 font-medium">Subir Logo</span>
                 <input
+                  id="logo"
                   type="file"
                   name="logo"
                   accept="image/*"
@@ -70,11 +68,11 @@ export default function PerfilEmpresa() {
                 />
               </label>
             </div>
-            
-            {/* Área de descripción */}
+
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Descripción</label>
+              <label htmlFor="descripcion" className="block text-gray-800 font-medium mb-2">Descripción</label>
               <textarea
+                id="descripcion"
                 name="descripcion"
                 value={formData.descripcion}
                 onChange={handleChange}
@@ -83,13 +81,12 @@ export default function PerfilEmpresa() {
               />
             </div>
           </div>
-          
-          {/* Columna derecha - ocupa 2/3 del espacio */}
+
           <div className="col-span-8">
-            {/* Correo de contacto */}
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Correo de Contacto</label>
+              <label htmlFor="correo_contacto" className="block text-gray-800 font-medium mb-2">Correo de Contacto</label>
               <input
+                id="correo_contacto"
                 type="email"
                 name="correo_contacto"
                 value={formData.correo_contacto}
@@ -98,11 +95,11 @@ export default function PerfilEmpresa() {
                 required
               />
             </div>
-            
-            {/* Teléfono */}
+
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Teléfono</label>
+              <label htmlFor="telefono" className="block text-gray-800 font-medium mb-2">Teléfono</label>
               <input
+                id="telefono"
                 type="text"
                 name="telefono"
                 value={formData.telefono}
@@ -110,11 +107,11 @@ export default function PerfilEmpresa() {
                 className="border border-gray-300 rounded-md p-3 w-full bg-gray-50"
               />
             </div>
-            
-            {/* Dirección */}
+
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Dirección</label>
+              <label htmlFor="direccion" className="block text-gray-800 font-medium mb-2">Dirección</label>
               <input
+                id="direccion"
                 type="text"
                 name="direccion"
                 value={formData.direccion}
@@ -122,11 +119,11 @@ export default function PerfilEmpresa() {
                 className="border border-gray-300 rounded-md p-3 w-full bg-gray-50"
               />
             </div>
-            
-            {/* Sector de la Empresa */}
+
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Sector de la Empresa</label>
+              <label htmlFor="sector" className="block text-gray-800 font-medium mb-2">Sector de la Empresa</label>
               <select
+                id="sector"
                 name="sector"
                 value={formData.sector}
                 onChange={handleChange}
@@ -140,11 +137,11 @@ export default function PerfilEmpresa() {
                 <option value="Educación">Educación</option>
               </select>
             </div>
-            
-            {/* Tamaño de la Empresa */}
+
             <div className="mb-6">
-              <label className="block text-gray-800 font-medium mb-2">Tamaño de la Empresa</label>
+              <label htmlFor="tamano" className="block text-gray-800 font-medium mb-2">Tamaño de la Empresa</label>
               <select
+                id="tamano"
                 name="tamano"
                 value={formData.tamano}
                 onChange={handleChange}
@@ -157,11 +154,11 @@ export default function PerfilEmpresa() {
                 <option value="Grande">Grande</option>
               </select>
             </div>
-            
-            {/* Sitio Web */}
+
             <div className="mb-10">
-              <label className="block text-gray-800 font-medium mb-2">Sitio Web</label>
+              <label htmlFor="sitio_web" className="block text-gray-800 font-medium mb-2">Sitio Web</label>
               <input
+                id="sitio_web"
                 type="url"
                 name="sitio_web"
                 value={formData.sitio_web}
@@ -172,7 +169,6 @@ export default function PerfilEmpresa() {
           </div>
         </div>
 
-        {/* Botón Guardar Perfil - centrado horizontalmente */}
         <div className="flex justify-center mt-8">
           <button
             type="submit"
@@ -182,7 +178,6 @@ export default function PerfilEmpresa() {
           </button>
         </div>
 
-        {/* Mensajes de éxito o error */}
         {mensaje && <p className="text-green-600 text-center mt-4">{mensaje}</p>}
         {error && <p className="text-red-600 text-center mt-4">{error}</p>}
       </form>
