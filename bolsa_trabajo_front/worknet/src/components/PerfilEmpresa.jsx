@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 export default function PerfilEmpresa() {
@@ -15,6 +16,37 @@ export default function PerfilEmpresa() {
 
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const [token, setToken] = useState("");
+  const [perfilExistente, setPerfilExistente] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      verificarPerfilExistente(storedToken);
+    }
+  }, []);
+
+  const verificarPerfilExistente = async (token) => {
+    try {
+      const response = await api.get("/empresas/mi-perfil/", {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        setPerfilExistente(true);
+        setMensaje("Ya has creado tu perfil de empresa.");
+      }
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setPerfilExistente(false);
+      } else {
+        setError("Error al verificar el perfil existente.");
+      }
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -29,18 +61,31 @@ export default function PerfilEmpresa() {
     setMensaje("");
     setError("");
 
+    if (!token) {
+      setError("Debes iniciar sesión para crear tu perfil.");
+      return;
+    }
+
+    if (perfilExistente) {
+      setError("Ya has creado tu perfil de empresa.");
+      return;
+    }
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
+      if (value) data.append(key, value);
     });
 
     try {
       const response = await api.post("/empresas/crear-perfil/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
         },
       });
       setMensaje(response.data.mensaje);
+      setPerfilExistente(true);
+      setTimeout(() => navigate("/dashboard-empresa"), 2000);
     } catch (err) {
       setError("Error al guardar el perfil. Intenta de nuevo.");
     }
@@ -173,6 +218,7 @@ export default function PerfilEmpresa() {
           <button
             type="submit"
             className="bg-emerald-500 text-white py-3 px-8 rounded-md hover:bg-emerald-600 font-medium"
+            disabled={perfilExistente}
           >
             Guardar Perfil
           </button>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 export default function PerfilCandidato() {
   const [formData, setFormData] = useState({
@@ -15,13 +16,36 @@ export default function PerfilCandidato() {
   const [error, setError] = useState('');
   const [token, setToken] = useState('');
   const [camposFaltantes, setCamposFaltantes] = useState([]);
+  const [perfilExistente, setPerfilExistente] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
+      verificarPerfilExistente(storedToken);
     }
   }, []);
+
+  const verificarPerfilExistente = async (token) => {
+    try {
+      const response = await api.get('/candidatos/mi-perfil/', {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        setPerfilExistente(true);
+        setMensaje('Ya has creado tu perfil de candidato.');
+      }
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setPerfilExistente(false);
+      } else {
+        setError('Error al verificar el perfil existente.');
+      }
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -53,36 +77,33 @@ export default function PerfilCandidato() {
     }
 
     if (!token) {
-      setError('Necesitas iniciar sesión para guardar tu perfil. Por favor, inicia sesión e intenta nuevamente.');
+      setError('Necesitas iniciar sesión para guardar tu perfil.');
+      return;
+    }
+
+    if (perfilExistente) {
+      setError('Ya has creado tu perfil de candidato.');
       return;
     }
 
     const data = new FormData();
-    for (const key in formData) {
-      if (formData[key]) data.append(key, formData[key]);
-    }
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value) data.append(key, value);
+    });
 
     try {
-      const response = await axios.post(
-        'http://localhost:8000/api/candidatos/crear-perfil/',
-        data,
-        {
-          headers: {
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
+      const response = await api.post('/candidatos/crear-perfil/', data, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       setMensaje('¡Felicidades! Tu perfil ha sido guardado correctamente.');
+      setPerfilExistente(true);
+      setTimeout(() => navigate('/dashboard-candidato'), 2000);
     } catch (err) {
       console.error(err);
-      if (err.response?.status === 401) {
-        setError('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-      } else if (err.response?.data) {
-        setError('No se pudo guardar el perfil. Por favor, verifica la información e intenta nuevamente.');
-      } else {
-        setError('Ocurrió un error al conectar con el servidor. Por favor, intenta más tarde.');
-      }
+      setError('Error al guardar el perfil. Es posible que ya tengas uno creado.');
     }
   };
 
@@ -202,6 +223,7 @@ export default function PerfilCandidato() {
               type="submit"
               onClick={handleSubmit}
               className="bg-emerald-500 text-white py-2 px-8 rounded hover:bg-emerald-600 w-full max-w-xs"
+              disabled={perfilExistente}
             >
               Guardar Perfil
             </button>

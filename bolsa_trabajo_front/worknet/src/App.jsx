@@ -5,11 +5,15 @@ import InicioSesion from './components/InicioSesion';
 import RegistroCandidato from './components/RegistroCandidato';
 import RegistroEmpresa from './components/RegistroEmpresa';
 import ElegirTipoCuenta from './components/ElegirTipoCuenta';
-import RestablecerContrasena from './components/RestablecerContrasena'; // desde enlace
-import EnviarRecuperacionCorreo from './components/EnviarRecuperacionCorreo'; // ingresar correo
-import PerfilEmpresa from "./components/PerfilEmpresa";
+import RestablecerContrasena from './components/RestablecerContrasena';
+import EnviarRecuperacionCorreo from './components/EnviarRecuperacionCorreo';
+import PerfilEmpresa from './components/PerfilEmpresa';
 import PerfilCandidato from './components/PerfilCandidato';
-//#endregion
+
+// 👇 Nuevos dashboards básicos
+import DashboardEmpresa from './components/DashboardEmpresa';
+import DashboardCandidato from './components/DashboardCandidato';
+
 function App() {
   return (
     <div className="min-h-screen bg-gray-100">
@@ -21,11 +25,12 @@ function App() {
         <Route path="/perfil-empresa" element={<PerfilEmpresa />} />
         <Route path="/perfil-candidato" element={<PerfilCandidato />} />
 
-        
-        {/* ✅ Paso 1: Ingresar correo */}
+        {/* ✅ Dashboards por tipo */}
+        <Route path="/dashboard-empresa" element={<DashboardEmpresa />} />
+        <Route path="/dashboard-candidato" element={<DashboardCandidato />} />
+
+        {/* ✅ Recuperación de contraseña */}
         <Route path="/recuperar" element={<EnviarRecuperacionCorreo />} />
-        
-        {/* ✅ Paso 2: Confirmar desde enlace con uid/token */}
         <Route path="/recuperar/confirmar/:uidb64/:token" element={<RestablecerContrasena />} />
       </Routes>
     </div>
