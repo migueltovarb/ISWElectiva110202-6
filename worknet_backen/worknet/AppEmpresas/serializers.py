@@ -1,6 +1,7 @@
+# AppEmpresas/serializers.py
 from rest_framework import serializers
 from AppUsuarios.models import Usuario
-from .models import Empresa ,PerfilEmpresa
+from .models import Empresa, PerfilEmpresa
 from django.contrib.auth.password_validation import validate_password
 
 class EmpresaRegistroSerializer(serializers.ModelSerializer):
@@ -26,7 +27,7 @@ class EmpresaRegistroSerializer(serializers.ModelSerializer):
         usuario = Usuario.objects.create_user(
             email=email,
             password=password,
-            nombre_completo=validated_data['razon_social'],  # nombre visible
+            nombre_completo=validated_data['razon_social'],
             ubicacion=validated_data['ubicacion']
         )
 
@@ -39,8 +40,12 @@ class EmpresaRegistroSerializer(serializers.ModelSerializer):
 
         return empresa
 
-#perfil empresa
+# ✅ Serializer actualizado para manejar el usuario automáticamente
 class PerfilEmpresaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerfilEmpresa
-        fields = '__all__'
+        exclude = ['usuario']  # 👈 Importante excluirlo para que no lo pida el frontend
+
+    def create(self, validated_data):
+        validated_data['usuario'] = self.context['request'].user
+        return super().create(validated_data)
